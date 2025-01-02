@@ -4,6 +4,9 @@ title = 'We Humanists'
 theme = 'paper'
 enableGitInfo = true
 
+[params]
+  description = 'Humans for Humanism and Progress'
+
 [frontmatter]
   date = ['date', 'publishDate', 'lastmod']
   expiryDate = ['expiryDate']
