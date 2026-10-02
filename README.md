@@ -145,6 +145,10 @@ draft = true
 | `mermaid` | no | `true` to enable Mermaid diagrams. |
 | `hideReadingTime` | no | `true` to hide the "N min read" shown next to the date. |
 
+> [!IMPORTANT]
+> **Check the `date`.** `hugo new` fills in the current date and time. Hugo hides posts dated in the future, both locally and on the live site, until that moment arrives. If your post is missing from `hugo server -D`, check its `date` first. To preview a future-dated post on purpose, use `hugo server -D -F`.
+>
+> If the author wrote the post on an earlier day, set that date, e.g. `date = 2026-09-25T00:00:00+05:30`.
 
 ### 3. Write the content (Markdown)
 
@@ -161,6 +165,20 @@ A claim that needs a source.[^1]
 
 [^1]: Source or footnote text.
 ```
+
+#### Pasting text from a document or email
+
+Plain text that looks fine in an editor can render differently as Markdown. Before previewing, check these:
+
+| In the pasted text | Renders as | Fix |
+|---|---|---|
+| Paragraphs separated by a single line break | One merged paragraph | Put a **blank line** between paragraphs. |
+| A line starting with `- ` (e.g. a sign-off `- Name`) | A bullet list | Escape the dash: `\- Name`. |
+| A line starting with `1) ` or `1. ` | A numbered list | Fine for lists. Keep list items on consecutive lines; a blank line between items is OK too. |
+| A line containing only `+++` | Literal `+++` text | Use `---` for a horizontal rule. |
+| A line of text directly above a `---` line | A heading | Put a blank line between the text and `---`. |
+
+Change only formatting, never the author's words.
 
 Collapsible section (theme shortcode; `summary` is required):
 
