@@ -109,7 +109,7 @@ git submodule update --init --recursive
 | `hugo server` | Local preview of published posts only (what the live site shows). |
 | `hugo new content posts/my-post.md` | Create a new post from the archetype. |
 | `hugo --gc --minify` | Production build into `public/` (CI does this for you). |
-| `git submodule update --remote themes/paper` | Update the theme to latest upstream (maintainers only). Then refresh the `baseof.html` override: see [Project structure](#project-structure). |
+| `git submodule update --remote themes/paper` | Update the theme to latest upstream (maintainers only). Then refresh the `layouts/_default/` overrides: see [Project structure](#project-structure). |
 
 ## Writing a new post
 
@@ -143,6 +143,8 @@ draft = true
 | `author` | no | e.g. `author = 'Your Name'` |
 | `math` | no | `true` to enable KaTeX math rendering. |
 | `mermaid` | no | `true` to enable Mermaid diagrams. |
+| `hideReadingTime` | no | `true` to hide the "N min read" shown next to the date. |
+
 
 ### 3. Write the content (Markdown)
 
@@ -245,15 +247,29 @@ To change something the theme renders, copy the file from `themes/paper/layouts/
 Current overrides:
 
 - `layouts/_default/baseof.html`: theme copy, with `site.LanguageCode` (deprecated) replaced by `site.Language.Locale`.
+- `layouts/_default/single.html`: theme copy, with a "N min read" item added to the post byline after the author (skipped when `hideReadingTime = true`).
 
 > [!NOTE]
-> **Updating the theme?** Hugo overrides whole files, so `layouts/_default/baseof.html` hides any upstream changes to the theme's version. After running `git submodule update --remote themes/paper`, refresh the override:
+> **Updating the theme?** Hugo overrides whole files, so each file above hides any upstream changes to the theme's version. After running `git submodule update --remote themes/paper`, refresh both overrides:
 >
 > ```sh
 > cp themes/paper/layouts/_default/baseof.html layouts/_default/baseof.html
+> cp themes/paper/layouts/_default/single.html layouts/_default/single.html
 > ```
 >
-> Then, in `layouts/_default/baseof.html`, change `site.LanguageCode` to `site.Language.Locale` again. Run `hugo server -D` and check that no deprecation warnings appear.
+> Then re-apply the custom changes:
+>
+> - In `baseof.html`, change `site.LanguageCode` to `site.Language.Locale`.
+> - In `single.html`, after the author `{{- end -}}` in the byline, add:
+>
+>   ```go-html-template
+>   {{- if not .Params.hideReadingTime -}}
+>   <span class="mx-1">&middot;</span>
+>   <span>{{- .ReadingTime }} min read</span>
+>   {{- end -}}
+>   ```
+>
+> Run `git diff layouts/` to compare against the previous version, then `hugo server -D` and check that posts show the read time and no deprecation warnings appear.
 
 ## Deployment
 
