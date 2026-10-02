@@ -1,6 +1,7 @@
 baseURL = 'https://wehumanists.org/'
 locale = 'en-us'
 title = 'We Humanists'
+copyright = '© We Humanists · Licensed under CC BY-NC-SA 4.0'
 theme = 'paper'
 enableGitInfo = true
 
