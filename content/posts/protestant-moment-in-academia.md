@@ -2,7 +2,7 @@
 title = 'Is this the protestant moment in academia?'
 date = 2026-09-25T00:00:00+05:30
 draft = false
-author = 'Damodar Kulkarni'
+author = 'K Damodar'
 +++
 
 Prof. Terrence Tao published a message titled "A Severe Misalignment of AI in Mathematics" which talks about a problem that is co-signed by 25 Fields Medalists. [ai] This recent and mostly ongoing saga of the Navier-Stokes problem being solved by some generative ai-tool and the response from a significant subsection of very talented and accomplished mathematician community exposes the grim tragedy facing the current academia and also of the educational goals of academic institutes in a subtle yet obvious to the keen kind of way that it reminded me the history of the Ninety-five Theses [95] that marked the onset of the Protestant Reformation in the history that affected the entire humanity too. This message signed by the Fields Medalists also raises points that deeply concern with ethics and commercialization/financialization of knowledge too besides the narrowly focused point like what shall happen to the general shape of mathematical research.
