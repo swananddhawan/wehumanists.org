@@ -186,6 +186,64 @@ Collapsible section (theme shortcode; `summary` is required):
 {{< collapse summary="Click to expand" content="Hidden **markdown** text" >}}
 ```
 
+#### Citations, references and disclaimers
+
+Use named citations, not numbered footnotes. Hugo's built-in footnotes (`[^1]`) always show numbers, so this site has two shortcodes instead (`layouts/shortcodes/`). They give a Wikipedia-style result: a superscript name in the text, and a list at the end with back-links.
+
+**1. Cite in the text** with `cite` and a short name. Put it right after the word or full stop, with no space before it:
+
+```markdown
+...increases.{{< cite "vc" >}}
+```
+
+It renders as a superscript link, <sup>[vc]</sup>, that jumps to the reference. Use the same name again to cite the same source again.
+
+**2. Define the references** once, as the last section of the post. Put `references` under a `## References` heading:
+
+```markdown
+## References
+
+{{< references >}}
+cd: Cory Doctorow. [Pluralistic](https://pluralistic.net/). Blog.
+vc: Catherine Bracy
+    [*World Eaters: How Venture Capital is Cannibalizing the Economy*](https://www.penguinrandomhouse.com/books/723091/world-eaters-by-catherine-bracy/)
+    Penguin Random House. Book.
+{{< /references >}}
+```
+
+- **Single-line entry:** `name: text`. The name starts in column 0. Markdown (links, `*italics*`) works in the text.
+- **Multi-line entry:** put `name:` on the first line (text after it is optional). Indent every following line (4 spaces). All lines belong to the entry, and each shows on its own line. Bullets (`- item`) also work.
+- **A new entry** starts at the next line that has no indent and looks like `name:`. Always indent continuation lines. A bare URL at the start of a line is safe, because `https:` is followed by `//`. A line such as `Note: text` with no indent is not safe.
+- **Names:** letters, digits, `-` and `_` only (`snake-oil` is fine). Use short, meaningful words, not numbers.
+
+**What you get.** The list shows entries in the order of first citation, as `[name] ^ text`. A source cited once has one `^` link back to the text. A source cited several times shows `^ a b c`, one letter for each place.
+
+**Rules and checks**
+
+- A cited name with no entry stops the build: `cited reference "cd" has no entry`. This catches typos.
+- An entry that nothing cites is left out of the list without a warning.
+- `references` must come after all `cite` calls. Keep `## References` as the last section.
+- Write each entry as: author, title as a link, publisher, type (book, article, video). Make the link text describe the page. Do not use a bare URL. Add a year or an access date only when you know it.
+- Do not invent author names, titles or dates. If a title comes from a URL, check it.
+- These shortcodes work only in Hugo. Other Markdown viewers (for example GitHub's) show the raw `{{< ... >}}` text.
+
+**Disclaimers.**
+
+- Put them in a `## Disclaimers` section, with one `###` heading for each disclaimer. Do not skip heading levels (`##` then `###`).
+- Put `## Disclaimers`, `## Contact` and `## References` after the sign-off, in that order.
+- Keep legal or employer statements visible. Do not hide them in a `collapse` block. Use `collapse` only for optional extras that the reader can skip.
+- Raw HTML (for example `<details>`) is off in this site's Markdown. Use the `collapse` shortcode instead.
+
+**Quotes.** Put a quotation in a `>` block. On the last line of the block, add the attribution and a `cite`:
+
+```markdown
+> The question of whether a computer can think is no more interesting than the question of whether a submarine can swim.
+>
+> — E.W. Dijkstra{{< cite "anthro" >}}
+```
+
+**Preview note.** `hugo server` holds a lock on the project (`.hugo_build.lock`). A second `hugo` build in the same folder waits and appears to hang. To build while the server runs, use `hugo --noBuildLock`.
+
 ### 4. Adding images
 
 Use a **page bundle**: a folder with `index.md` plus images next to it.
@@ -255,6 +313,7 @@ A maintainer will review and merge. Once merged, the site deploys automatically.
 │   ├── about.md                # About page
 │   └── posts/                  # Blog posts go here
 ├── layouts/                    # Site-level overrides of theme templates
+│   └── shortcodes/             # `cite` and `references` (new, not theme overrides)
 ├── themes/paper/               # Theme (git submodule — do not edit)
 ├── hugo.toml                   # Site configuration (title, menu, params)
 └── .github/workflows/hugo.yaml # Build + deploy pipeline
@@ -266,6 +325,8 @@ Current overrides:
 
 - `layouts/_default/baseof.html`: theme copy, with `site.LanguageCode` (deprecated) replaced by `site.Language.Locale`.
 - `layouts/_default/single.html`: theme copy, with a "N min read" item added to the post byline after the author (skipped when `hideReadingTime = true`).
+
+`layouts/shortcodes/cite.html` and `references.html` are new files, not copies of theme files. Theme updates do not affect them.
 
 > [!NOTE]
 > **Updating the theme?** Hugo overrides whole files, so each file above hides any upstream changes to the theme's version. After running `git submodule update --remote themes/paper`, refresh both overrides:
