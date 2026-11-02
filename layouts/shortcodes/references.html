@@ -1,0 +1,34 @@
+{{- /* Wikipedia-style reference list: named, in order of first citation. One "^" back-link, or "^ a b c" when cited several times. */ -}}
+{{- /* Body: an entry starts at "id:" in column 0. Indented lines below it continue the entry, one per line. */ -}}
+{{- $defs := dict -}}
+{{- $cur := "" -}}
+{{- $buf := slice -}}
+{{- range split .Inner "\n" -}}
+  {{- with findRESubmatch `^([\w-]+):(?:\s+(.*))?$` . 1 -}}
+    {{- if $cur }}{{ $defs = merge $defs (dict $cur (delimit $buf "  \n")) }}{{ end -}}
+    {{- $m := index . 0 -}}
+    {{- $cur = index $m 1 -}}
+    {{- $buf = slice -}}
+    {{- with trim (index $m 2) " \t\r" }}{{ $buf = slice . }}{{ end -}}
+  {{- else -}}
+    {{- if $cur }}{{ with trim . " \t\r" }}{{ $buf = $buf | append . }}{{ end }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $cur }}{{ $defs = merge $defs (dict $cur (delimit $buf "  \n")) }}{{ end -}}
+{{- $cites := .Page.Store.Get "cites" | default dict -}}
+{{- $seen := slice -}}
+{{- range $cites -}}
+  {{- $id := index (split . "/") 0 -}}
+  {{- if not (in $seen $id) }}{{ $seen = $seen | append $id }}{{ end -}}
+{{- end -}}
+{{- range $seen }}{{ if not (index $defs .) }}{{ errorf "cited reference %q has no entry: %s" . $.Position }}{{ end }}{{ end -}}
+<ul style="list-style:none;padding-left:0">
+{{- range $id := $seen }}
+  {{- $links := slice }}
+  {{- range $cites }}{{ $p := split . "/" }}{{ if eq (index $p 0) $id }}{{ $links = $links | append (index $p 1) }}{{ end }}{{ end }}
+  <li id="ref-{{ $id }}"><strong>[{{ $id }}]</strong>
+  {{- if eq (len $links) 1 }} <a href="#cite-{{ $id }}-{{ index $links 0 }}" aria-label="Back to citation">^</a>
+  {{- else }} ^{{ range $i, $n := $links }} <a href="#cite-{{ $id }}-{{ $n }}" aria-label="Back to citation {{ add $i 1 }}"><i>{{ index (split "abcdefghijklmnopqrstuvwxyz" "") $i }}</i></a>{{ end }}
+  {{- end }} {{ index $defs $id | markdownify }}</li>
+{{- end }}
+</ul>

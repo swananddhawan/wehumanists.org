@@ -1,0 +1,6 @@
+{{- /* Named citation: {{< cite "id" >}}. Entry text lives in the {{< references >}} block at the end of the post. */ -}}
+{{- $id := .Get 0 -}}
+{{- /* Keyed by shortcode position, so a re-render of the same citation never adds a duplicate. */ -}}
+{{- $n := .Ordinal -}}
+{{- .Page.Store.SetInMap "cites" (printf "%04d" $n) (printf "%s/%d" $id $n) -}}
+<sup style="margin-left:.15em"><a id="cite-{{ $id }}-{{ $n }}" href="#ref-{{ $id }}">[{{ $id }}]</a></sup>
