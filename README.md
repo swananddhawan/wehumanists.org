@@ -166,6 +166,21 @@ A claim that needs a source.[^1]
 [^1]: Source or footnote text.
 ```
 
+#### Alert blocks
+
+Use `NOTE`, `TIP`, `IMPORTANT`, `WARNING`, or `CAUTION` to mark information that needs attention:
+
+```markdown
+> [!NOTE]
+> Information that the reader needs to know.
+```
+
+Each type renders as a filled box with a colored border, an icon, and a label. The colors change in dark mode. You can use paragraphs, lists, links, emphasis, and code inside the block. Put `>` before each line, including blank lines.
+
+Use only the type marker on the first line. Custom titles and collapsible alerts are not supported. Ordinary quotations keep their existing appearance.
+
+The site uses `layouts/_markup/render-blockquote.html` and `assets/custom.css`. Do not change the theme submodule to change these blocks.
+
 #### Pasting text from a document or email
 
 Plain text that looks fine in an editor can render differently as Markdown. Before previewing, check these:
