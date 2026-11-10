@@ -1,0 +1,23 @@
+{{- $icons := dict
+  "note" `<circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/>`
+  "tip" `<path d="M9 18h6m-5 3h4M8 14a6 6 0 1 1 8 0c-1 1-1 2-1 3H9c0-1 0-2-1-3Z"/>`
+  "important" `<path d="M4 3h16v14H9l-5 4V3Zm8 4v5m0 2v1"/>`
+  "warning" `<path d="m12 3 10 18H2L12 3Zm0 6v6m0 2v1"/>`
+  "caution" `<path d="m8 2-6 6v8l6 6h8l6-6V8l-6-6H8Zm4 4v8m0 2v2"/>`
+-}}
+{{- if and (eq .Type "alert") (isset $icons .AlertType) -}}
+<div class="markdown-alert markdown-alert-{{ .AlertType }}">
+  <div class="markdown-alert-title">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">{{ index $icons .AlertType | safeHTML }}</svg>
+    <span>{{ .AlertType | title }}</span>
+  </div>
+  <div class="markdown-alert-content">{{ .Text }}</div>
+</div>
+{{- else -}}
+<blockquote>
+  {{- if eq .Type "alert" -}}
+  <p>[!{{ .AlertType | upper }}]{{ .AlertSign }}{{ with .AlertTitle }} {{ . }}{{ end }}</p>
+  {{- end -}}
+  {{ .Text }}
+</blockquote>
+{{- end -}}
